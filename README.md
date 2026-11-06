@@ -68,7 +68,9 @@ docker build -t questionnaire .
 docker run --rm -p 8000:8000 questionnaire
 ```
 
-URL pública pendiente. En Render, crea un Web Service desde el repositorio público y selecciona Docker como runtime. Usa el Dockerfile de la raíz y deja el comando de arranque predeterminado. Cuando el servicio esté disponible, sube uno de los ejemplos desde la interfaz y agrega aquí la URL pública. [Guía de Render](https://render.com/docs/docker#building-from-a-dockerfile)
+[Aplicación desplegada en Render](https://prueba-adipa.onrender.com/)
+
+En Render, crea un Web Service desde el repositorio público y selecciona Docker como runtime. Usa el Dockerfile de la raíz y deja el comando de arranque predeterminado. Cuando el servicio esté disponible, sube uno de los ejemplos desde la interfaz para verificar el despliegue. [Guía de Render](https://render.com/docs/docker#building-from-a-dockerfile)
 
 ## Formatos y supuestos
 
