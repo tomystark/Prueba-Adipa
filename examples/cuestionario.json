@@ -1,0 +1,89 @@
+{
+  "titulo": "Cuestionario de práctica",
+  "idioma": "es",
+  "total_items": 5,
+  "items": [
+    {
+      "numero": 1,
+      "enunciado": "Me resulta fácil mantener la calma cuando cambian mis planes.",
+      "tipo": "escala_likert",
+      "alternativas": [
+        {
+          "valor": 0,
+          "texto": "Nunca"
+        },
+        {
+          "valor": 1,
+          "texto": "A veces"
+        },
+        {
+          "valor": 2,
+          "texto": "Siempre"
+        }
+      ],
+      "respuesta_correcta": null
+    },
+    {
+      "numero": 2,
+      "enunciado": "¿Qué figura tiene tres lados iguales?",
+      "tipo": "seleccion_multiple",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Un cuadrado"
+        },
+        {
+          "valor": "B",
+          "texto": "Un triángulo equilátero"
+        },
+        {
+          "valor": "C",
+          "texto": "Un círculo"
+        }
+      ],
+      "respuesta_correcta": "B"
+    },
+    {
+      "numero": 3,
+      "enunciado": "Una semana tiene siete días.",
+      "tipo": "verdadero_falso",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Verdadero"
+        },
+        {
+          "valor": "B",
+          "texto": "Falso"
+        }
+      ],
+      "respuesta_correcta": "A"
+    },
+    {
+      "numero": 4,
+      "enunciado": "Describe una actividad que disfrutas durante el fin de semana.",
+      "tipo": "desarrollo",
+      "alternativas": [],
+      "respuesta_correcta": null
+    },
+    {
+      "numero": 5,
+      "enunciado": "Relaciona cada animal con su grupo.",
+      "tipo": "emparejamiento",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Perro → Mamífero"
+        },
+        {
+          "valor": "B",
+          "texto": "Rana → Anfibio"
+        }
+      ],
+      "respuesta_correcta": {
+        "Perro": "Mamífero",
+        "Rana": "Anfibio"
+      }
+    }
+  ]
+}
