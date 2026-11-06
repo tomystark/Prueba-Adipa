@@ -1,0 +1,93 @@
+{
+  "titulo": "Engineering workshop questionnaire",
+  "idioma": "en",
+  "total_items": 5,
+  "items": [
+    {
+      "numero": 1,
+      "enunciado": "How often do you check your tools before starting a task?",
+      "tipo": "escala_likert",
+      "alternativas": [
+        {
+          "valor": 0,
+          "texto": "Never"
+        },
+        {
+          "valor": 1,
+          "texto": "Sometimes"
+        },
+        {
+          "valor": 2,
+          "texto": "Often"
+        },
+        {
+          "valor": 3,
+          "texto": "Always"
+        }
+      ],
+      "respuesta_correcta": null
+    },
+    {
+      "numero": 2,
+      "enunciado": "Which instrument measures electrical resistance?",
+      "tipo": "seleccion_multiple",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Thermometer"
+        },
+        {
+          "valor": "B",
+          "texto": "Ohmmeter"
+        },
+        {
+          "valor": "C",
+          "texto": "Stopwatch"
+        }
+      ],
+      "respuesta_correcta": "B"
+    },
+    {
+      "numero": 3,
+      "enunciado": "A circuit breaker can interrupt the flow of current.",
+      "tipo": "verdadero_falso",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "True"
+        },
+        {
+          "valor": "B",
+          "texto": "False"
+        }
+      ],
+      "respuesta_correcta": "A"
+    },
+    {
+      "numero": 4,
+      "enunciado": "Describe how you would organize a shared workbench.",
+      "tipo": "desarrollo",
+      "alternativas": [],
+      "respuesta_correcta": null
+    },
+    {
+      "numero": 5,
+      "enunciado": "Match each component with its function.",
+      "tipo": "emparejamiento",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Switch -> Opens or closes a circuit"
+        },
+        {
+          "valor": "B",
+          "texto": "Fuse -> Protects against excess current"
+        }
+      ],
+      "respuesta_correcta": {
+        "Switch": "Opens or closes a circuit",
+        "Fuse": "Protects against excess current"
+      }
+    }
+  ]
+}

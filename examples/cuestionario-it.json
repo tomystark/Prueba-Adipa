@@ -1,0 +1,93 @@
+{
+  "titulo": "Questionario sul laboratorio di robotica",
+  "idioma": "it",
+  "total_items": 5,
+  "items": [
+    {
+      "numero": 1,
+      "enunciado": "Con quale frequenza controlli gli strumenti prima di iniziare?",
+      "tipo": "escala_likert",
+      "alternativas": [
+        {
+          "valor": 0,
+          "texto": "Mai"
+        },
+        {
+          "valor": 1,
+          "texto": "A volte"
+        },
+        {
+          "valor": 2,
+          "texto": "Spesso"
+        },
+        {
+          "valor": 3,
+          "texto": "Sempre"
+        }
+      ],
+      "respuesta_correcta": null
+    },
+    {
+      "numero": 2,
+      "enunciado": "Quale strumento misura la temperatura?",
+      "tipo": "seleccion_multiple",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Una bilancia"
+        },
+        {
+          "valor": "B",
+          "texto": "Un termometro"
+        },
+        {
+          "valor": "C",
+          "texto": "Un cronometro"
+        }
+      ],
+      "respuesta_correcta": "B"
+    },
+    {
+      "numero": 3,
+      "enunciado": "Un sensore può misurare la distanza da un ostacolo.",
+      "tipo": "verdadero_falso",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Vero"
+        },
+        {
+          "valor": "B",
+          "texto": "Falso"
+        }
+      ],
+      "respuesta_correcta": "A"
+    },
+    {
+      "numero": 4,
+      "enunciado": "Descrivi come organizzeresti il materiale prima di un esperimento.",
+      "tipo": "desarrollo",
+      "alternativas": [],
+      "respuesta_correcta": null
+    },
+    {
+      "numero": 5,
+      "enunciado": "Abbina ogni componente alla sua funzione.",
+      "tipo": "emparejamiento",
+      "alternativas": [
+        {
+          "valor": "A",
+          "texto": "Batteria -> Fornisce energia"
+        },
+        {
+          "valor": "B",
+          "texto": "Motore -> Produce movimento"
+        }
+      ],
+      "respuesta_correcta": {
+        "Batteria": "Fornisce energia",
+        "Motore": "Produce movimento"
+      }
+    }
+  ]
+}
