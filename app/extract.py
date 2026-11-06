@@ -78,15 +78,20 @@ def read_lines(extension: str, data: bytes) -> list[str]:
         book.close()
 
 
-def answer_value(raw: str, choices: list[Alternative], kind: str):
+def answer_value(raw: str, choices: list[Alternative], kind: str, number: int):
+    if not raw:
+        return None
     if kind == "emparejamiento":
         pairs = [re.fullmatch(r"([^=,]+)=([^=,]+)", pair.strip()) for pair in raw.split(",")]
         if all(pairs):
             return {pair[1].strip(): pair[2].strip() for pair in pairs}
+        raise InvalidDocument(f"Usa pares «origen=destino» en la clave del ítem {number}.")
     for choice in choices:
         if raw.casefold() in {str(choice.valor).casefold(), choice.texto.casefold()}:
             return choice.valor
-    return raw or None
+    if choices:
+        raise InvalidDocument(f"La respuesta de la clave no coincide con una alternativa del ítem {number}.")
+    return raw
 
 
 def build_item(number: int, statement: str, lines: list[str]) -> Item:
@@ -117,7 +122,7 @@ def build_item(number: int, statement: str, lines: list[str]) -> Item:
         else:
             kind = "seleccion_multiple"
     return Item(numero=number, enunciado=statement, tipo=kind, alternativas=choices,
-                respuesta_correcta=answer_value(answer, choices, kind))
+                respuesta_correcta=answer_value(answer, choices, kind, number))
 
 
 def dot_scale_end(lines: list[str], start: int) -> int:
@@ -155,12 +160,7 @@ def apply_answer_key(items: list[Item], lines: list[str]) -> None:
             raise InvalidDocument(f"Número de ítem desconocido o repetido en la clave: {number}.")
         seen.add(number)
         item = by_number[number]
-        answer = answer_value(match[2], item.alternativas, item.tipo)
-        if item.tipo == "emparejamiento":
-            if not isinstance(answer, dict):
-                raise InvalidDocument(f"Usa pares «origen=destino» en la clave del ítem {number}.")
-        elif item.alternativas and answer not in {choice.valor for choice in item.alternativas}:
-            raise InvalidDocument(f"La respuesta de la clave no coincide con una alternativa del ítem {number}.")
+        answer = answer_value(match[2], item.alternativas, item.tipo, number)
         if item.respuesta_correcta is not None and item.respuesta_correcta != answer:
             raise InvalidDocument(f"Las claves del ítem {number} indican respuestas diferentes.")
         item.respuesta_correcta = answer

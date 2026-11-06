@@ -124,3 +124,16 @@ def test_reject_ambiguous_numbering():
     response = upload_questionnaire("Practice quiz", "1. Choose a color.", "1. Blue", "2. Green")
     assert response.status_code == 422
     assert "Numeración ambigua" in response.json()["detail"]
+
+
+@pytest.mark.parametrize(("key", "status"), [("B", 200), ("Steel", 200), ("Z", 422)])
+def test_inline_choice_key(key, status):
+    response = upload_questionnaire(
+        "Practice quiz", "1. Which material is correct?", "A) Copper", "B) Steel",
+        f"Correct answer: {key}",
+    )
+    assert response.status_code == status, response.text
+    if status == 200:
+        assert response.json()["items"][0]["respuesta_correcta"] == "B"
+    else:
+        assert "alternativa del ítem 1" in response.json()["detail"]
