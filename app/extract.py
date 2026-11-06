@@ -17,6 +17,9 @@ DetectorFactory.seed = 0
 QUESTION = re.compile(r"^(\d{1,4})[.)]\s+(.+)$")
 CHOICE = re.compile(r"^([A-Za-z]|\d{1,2})[.):]\s+(.+)$")
 ANSWER = re.compile(r"^(?:respuesta correcta|correct answer|risposta corretta)\s*:\s*(.+)$", re.I)
+KEY_HEADING = re.compile(r"^(?:answer key|clave de respuestas|soluzioni)\s*:?$", re.I)
+KEY_ENTRY = re.compile(r"^(\d{1,4})[.):]\s*(\S.*)$")
+DOT_CHOICE = re.compile(r"^(\d{1,2})\.\s+(.+)$")
 TYPE = re.compile(r"^\[(escala_likert|seleccion_multiple|verdadero_falso|desarrollo|emparejamiento)\]\s*", re.I)
 BOOLEAN_LABELS = [{"verdadero", "falso"}, {"true", "false"}, {"vero", "falso"}]
 LIKERT_LABELS = {
@@ -117,28 +120,94 @@ def build_item(number: int, statement: str, lines: list[str]) -> Item:
                 respuesta_correcta=answer_value(answer, choices, kind))
 
 
+def dot_scale_end(lines: list[str], start: int) -> int:
+    """Find consecutive dot-numbered choices with distinct, recognized labels."""
+    end = start
+    labels = set()
+    first = DOT_CHOICE.match(lines[start])
+    if first is None or int(first[1]) not in {0, 1}:
+        return start
+    number = int(first[1])
+    while end < len(lines):
+        match = DOT_CHOICE.match(lines[end])
+        if match is None or int(match[1]) != number:
+            break
+        label = match[2].casefold().rstrip(".")
+        if label not in LIKERT_LABELS or label in labels:
+            break
+        labels.add(label)
+        number += 1
+        end += 1
+    return end if len(labels) >= 2 else start
+
+
+def apply_answer_key(items: list[Item], lines: list[str]) -> None:
+    by_number = {item.numero: item for item in items}
+    seen = set()
+    if not lines:
+        raise InvalidDocument("La clave de respuestas está vacía.")
+    for line in lines:
+        match = KEY_ENTRY.match(line)
+        if match is None:
+            raise InvalidDocument("Usa el formato «1. B» en la clave de respuestas.")
+        number = int(match[1])
+        if number not in by_number or number in seen:
+            raise InvalidDocument(f"Número de ítem desconocido o repetido en la clave: {number}.")
+        seen.add(number)
+        item = by_number[number]
+        answer = answer_value(match[2], item.alternativas, item.tipo)
+        if item.tipo == "emparejamiento":
+            if not isinstance(answer, dict):
+                raise InvalidDocument(f"Usa pares «origen=destino» en la clave del ítem {number}.")
+        elif item.alternativas and answer not in {choice.valor for choice in item.alternativas}:
+            raise InvalidDocument(f"La respuesta de la clave no coincide con una alternativa del ítem {number}.")
+        if item.respuesta_correcta is not None and item.respuesta_correcta != answer:
+            raise InvalidDocument(f"Las claves del ítem {number} indican respuestas diferentes.")
+        item.respuesta_correcta = answer
+
+
 def parse(lines: list[str]) -> Questionnaire:
     title = "Cuestionario"
     header = []
     items = []
     body = []
     current = None
-    for raw in lines:
-        line = " ".join(raw.split())
-        if not line:
-            continue
-        match = QUESTION.match(line)
-        if match:
+    normalized = [line for raw in lines if (line := " ".join(raw.split()))]
+    key_lines = None
+    index = 0
+    seen_numbers = set()
+    while index < len(normalized):
+        line = normalized[index]
+        if current and KEY_HEADING.fullmatch(line):
+            key_lines = normalized[index + 1:]
+            break
+        if match := QUESTION.match(line):
+            if current and not any(CHOICE.match(part) or ANSWER.match(part) for part in body):
+                end = dot_scale_end(normalized, index)
+                if end > index:
+                    body.extend(normalized[index:end])
+                    index = end
+                    continue
+            number = int(match[1])
+            if number in seen_numbers or (current and number == 0):
+                raise InvalidDocument(
+                    f"Numeración ambigua en el ítem {number}. Usa «0: Nunca» para opciones numéricas "
+                    "o agrega un encabezado a la clave de respuestas."
+                )
             if current:
                 items.append(build_item(*current, body))
-            current = (int(match[1]), match[2])
+            seen_numbers.add(number)
+            current = (number, match[2])
             body = []
         elif current:
             body.append(line)
         else:
             header.append(line)
+        index += 1
     if current:
         items.append(build_item(*current, body))
+    if key_lines is not None:
+        apply_answer_key(items, key_lines)
     if not items:
         raise InvalidDocument("No se detectaron ítems numerados en el documento.")
     if header:

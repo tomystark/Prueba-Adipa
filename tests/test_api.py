@@ -25,11 +25,12 @@ def test_invalid_upload(name, content, status):
 
 
 @pytest.mark.parametrize("extension", ["docx", "pdf", "xlsx"])
-def test_extract_example(extension):
-    path = examples / f"cuestionario.{extension}"
+@pytest.mark.parametrize("stem", ["cuestionario", "cuestionario-en", "cuestionario-it"])
+def test_extract_example(extension, stem):
+    path = examples / f"{stem}.{extension}"
     response = client.post("/api/extract", files={"file": (path.name, path.read_bytes())})
     assert response.status_code == 200, response.text
-    expected = json.loads((examples / "cuestionario.json").read_text(encoding="utf-8"))
+    expected = json.loads((examples / f"{stem}.json").read_text(encoding="utf-8"))
     assert Questionnaire.model_validate(response.json()).model_dump() == expected
 
 
@@ -69,3 +70,57 @@ def test_document_without_items():
     response = client.post("/api/extract", files={"file": ("quiz.docx", buffer.getvalue())})
     assert response.status_code == 422
     assert "No se detectaron" in response.json()["detail"]
+
+
+def upload_questionnaire(*lines):
+    from io import BytesIO
+    from docx import Document
+
+    doc = Document()
+    for line in lines:
+        doc.add_paragraph(line)
+    buffer = BytesIO()
+    doc.save(buffer)
+    return client.post("/api/extract", files={"file": ("quiz.docx", buffer.getvalue())})
+
+
+def test_dot_numbered_likert_choices():
+    response = upload_questionnaire(
+        "Practice quiz", "1. How often do you check your tools?", "0. Never", "1. Always",
+        "2. Describe your process.",
+    )
+    assert response.status_code == 200, response.text
+    result = response.json()
+    assert result["total_items"] == 2
+    assert result["items"][0]["tipo"] == "escala_likert"
+    assert result["items"][0]["alternativas"] == [
+        {"valor": 0, "texto": "Never"}, {"valor": 1, "texto": "Always"},
+    ]
+    assert result["items"][1]["numero"] == 2
+
+
+@pytest.mark.parametrize("heading", ["Answer key", "Clave de respuestas:", "Soluzioni"])
+def test_trailing_answer_key(heading):
+    response = upload_questionnaire(
+        "Practice quiz", "1. Which answer is correct?", "A) One", "B) Two",
+        "2. Describe your reasoning.", heading, "1. B",
+    )
+    assert response.status_code == 200, response.text
+    result = response.json()
+    assert result["total_items"] == 2
+    assert [item["respuesta_correcta"] for item in result["items"]] == ["B", None]
+
+
+@pytest.mark.parametrize("entry", ["1. Z", "9. B"])
+def test_reject_invalid_trailing_key(entry):
+    response = upload_questionnaire(
+        "Practice quiz", "1. Which answer is correct?", "A) One", "B) Two",
+        "Answer key", entry,
+    )
+    assert response.status_code == 422
+
+
+def test_reject_ambiguous_numbering():
+    response = upload_questionnaire("Practice quiz", "1. Choose a color.", "1. Blue", "2. Green")
+    assert response.status_code == 422
+    assert "Numeración ambigua" in response.json()["detail"]
