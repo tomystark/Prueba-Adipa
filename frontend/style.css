@@ -8,3 +8,4 @@ button { background: #174f75; color: white; border: 0; border-radius: .4rem; fon
 button:disabled { opacity: .55; cursor: default; }
 pre { padding: 1rem; background: #f0f5f8; overflow: auto; max-height: 26rem; }
 [role=alert] { color: #972825; }
+.brand-logo { display: block; object-fit: contain; border-radius: .5rem; }

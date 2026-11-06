@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
+import adipaLogo from "./adipa-logo.png";
 import "./style.css";
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
   }
 
   return <main>
+    <img className="brand-logo" src={adipaLogo} alt="ADIPA" width="64" height="64" />
     <h1>Extractor de cuestionarios</h1>
     <p>Convierte cuestionarios numerados en JSON. Usa documentos inventados o de dominio público.</p>
     <form onSubmit={extract}>
