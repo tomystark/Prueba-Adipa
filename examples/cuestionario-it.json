@@ -65,10 +65,10 @@
     },
     {
       "numero": 4,
-      "enunciado": "Descrivi come organizzeresti il materiale prima di un esperimento.",
+      "enunciado": "Come si chiama lo strumento che misura la temperatura?",
       "tipo": "desarrollo",
       "alternativas": [],
-      "respuesta_correcta": null
+      "respuesta_correcta": "Termometro"
     },
     {
       "numero": 5,

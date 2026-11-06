@@ -61,10 +61,10 @@
     },
     {
       "numero": 4,
-      "enunciado": "Describe una actividad que disfrutas durante el fin de semana.",
+      "enunciado": "¿Cómo se llama el instrumento que mide la temperatura?",
       "tipo": "desarrollo",
       "alternativas": [],
-      "respuesta_correcta": null
+      "respuesta_correcta": "Termómetro"
     },
     {
       "numero": 5,

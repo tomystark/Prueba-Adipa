@@ -65,10 +65,10 @@
     },
     {
       "numero": 4,
-      "enunciado": "Describe how you would organize a shared workbench.",
+      "enunciado": "Name the unit used to measure electrical resistance.",
       "tipo": "desarrollo",
       "alternativas": [],
-      "respuesta_correcta": null
+      "respuesta_correcta": "Ohm"
     },
     {
       "numero": 5,
